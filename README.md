@@ -152,6 +152,24 @@ volumes:
       device: /srv/pbs/lib
 ```
 
+### 6. Custom Script options:
+
+Run different setup script options:
+
+```yaml
+version: '2.1'
+
+environment:
+  - PBS_SOURCES=yes
+  - PBS_ENTERPRISE=yes
+  - PBS_NO_SUBSCRIPTION=yes
+  - PBS_TEST=no
+  - DISABLE_SUBSCRIPTION_NAG=yes
+  - UPDATE_PBS=yes
+  - REBOOT_PBS=no
+```
+
+
 ## Install on bare-metal host
 
 Docker is convienient, but in some cases it might be simply better to install natively.
