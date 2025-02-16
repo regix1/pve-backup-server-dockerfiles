@@ -19,6 +19,7 @@ RUN for tool in /root/.cargo/bin/*; do ln -vsf $tool /usr/bin/; done
 RUN /usr/bin/rustc --version
 RUN git config --global user.email "docker@compile.dev" && \
   git config --global user.name "Docker Compile"
+
 FROM toolchain as builder
 # Clone all sources
 ARG VERSION=master
@@ -65,6 +66,7 @@ RUN cd proxmox-acme/ && make deb
 # Copy all debian packages
 RUN mkdir -p /deb && \
   find /src/ -name '*.deb' -exec cp -av {} /deb/ \;
+
 #=================================
 FROM ${ARCH}debian:bookworm
 
@@ -78,6 +80,7 @@ ENV PBS_SOURCES=yes \
     REBOOT_PBS=no
 
 COPY --from=builder /deb/ /deb/
+
 # Install all packages
 RUN export DEBIAN_FRONTEND=noninteractive && \
   apt-get -y update && \
@@ -86,7 +89,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 # Add default configs
 ADD /pbs/ /etc/proxmox-backup-default/
-ADD /scripts/post-install.sh /usr/local/bin/
+ADD /versions/${VERSION}/scripts/post-install.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/post-install.sh
 
 VOLUME /etc/proxmox-backup
