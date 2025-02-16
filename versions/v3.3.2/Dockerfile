@@ -89,7 +89,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 # Add default configs
 ADD /pbs/ /etc/proxmox-backup-default/
-ADD scripts/post-install.sh /usr/local/bin/
+ADD versions/v3.3.2/scripts/post-install.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/post-install.sh
 
 VOLUME /etc/proxmox-backup
