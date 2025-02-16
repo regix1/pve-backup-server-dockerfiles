@@ -169,6 +169,9 @@ environment:
   - REBOOT_PBS=no
 ```
 
+### 7. Build Command from root directory:
+
+docker build -t proxmox-backup-server --build-arg VERSION=v3.3.2 -f versions/v3.3.2/Dockerfile .
 
 ## Install on bare-metal host
 
