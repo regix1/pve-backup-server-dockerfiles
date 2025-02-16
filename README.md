@@ -171,8 +171,9 @@ environment:
 
 ### 7. Build Command from root directory:
 
+```bash
 docker build -t proxmox-backup-server --build-arg VERSION=v3.3.2 -f versions/v3.3.2/Dockerfile .
-
+```
 ## Install on bare-metal host
 
 Docker is convienient, but in some cases it might be simply better to install natively.
