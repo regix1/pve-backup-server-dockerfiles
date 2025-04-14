@@ -1,74 +1,51 @@
 # Proxmox Backup Server in a Container
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/regix1/proxmox-backup-server-container)](https://github.com/regix1/proxmox-backup-server-container/releases)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/regix1/proxmox-backup-server-container?include_prereleases)](https://github.com/regix1/proxmox-backup-server-container/releases)
+[![Docker Image CI](https://github.com/regix1/proxmox-backup-server-container/actions/workflows/docker-image.yml/badge.svg)](https://github.com/regix1/proxmox-backup-server-container/actions/workflows/docker-image.yml)
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/ayufan/pve-backup-server-dockerfiles?label=GitHub%20STABLE)](https://github.com/ayufan/pve-backup-server-dockerfiles/releases) [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ayufan/pve-backup-server-dockerfiles?include_prereleases&color=red&label=GitHub%20BETA)](https://github.com/ayufan/pve-backup-server-dockerfiles/releases/latest)
+This is an unofficial compilation of Proxmox Backup Server to run it in a container for AMD64 architecture.
 
-[![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/ayufan/proxmox-backup-server/latest?label=Docker%20LATEST)](https://hub.docker.com/r/ayufan/proxmox-backup-server/tags) [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/ayufan/proxmox-backup-server?sort=semver&color=red&label=Docker%20BETA)](https://hub.docker.com/r/ayufan/proxmox-backup-server/tags)
-
-This is an unofficial compilation of Proxmox Backup Server
-to run it in a container for AMD64 and ARM64.
-
-Running in a container might result in some functions not working
-properly. Feel free to create an issue to debug those.
-
-## Buy me a Coffee
-
-<a href='https://ko-fi.com/ayufan' target='_blank'><img height='30' style='border:0px;height:40px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' alt='Buy Me a Coffee at ko-fi.com' /></a>
-
-If you found it useful :)
+Running in a container might result in some functions not working properly. Feel free to create an issue to debug those.
 
 ## Common problems
-
-- Some people see authentication failure using `admin@pbs`: Ensure that `/run` is mounted to `tmpfs` which is requirement of `2.1.x`
-- Some Synology devices use a really old kernel (3.1), for such the https://github.com/ayufan/pve-backup-server-dockerfiles/pull/15
-  is needed, and image needs to be manually recompiled.
+- Some people see authentication failure using admin@pbs: Ensure that `/run` is mounted to tmpfs which is requirement of 2.1.x
+- Some Synology devices use a really old kernel (3.1), for such the ayufan#15 is needed, and image needs to be manually recompiled.
 
 ## Pre-built images
+For starting quickly all images are precompiled and hosted on GitHub Container Registry:
 
-For starting quickly all images are precompiled and hosted
-at https://hub.docker.com/r/ayufan/proxmox-backup-server.
-
-Or:
-
-```bash
-docker pull ayufan/proxmox-backup-server:latest
+```
+docker pull ghcr.io/regix1/proxmox-backup-server:latest
 ```
 
 ## Run
-
-```bash
+```
 docker-compose up -d
 ```
 
-Then login to `https://<ip>:8007/` with `admin / pbspbs`.
-After that change a password.
+Then login to https://<ip>:8007/ with admin / pbspbs. After that change a password.
 
 ## Features
-
 The core features should work, but there are ones do not work due to container architecture:
 
 - ZFS: it is not installed in a container
 - Shell: since the PVE (not PAM) authentication is being used, and since the shell access does not make sense in an ephemeral container environment
-- PAM authentication: since containers are by definition ephemeral and no `/etc/` configs are being persisted
+- PAM authentication: since containers are by definition ephemeral and no /etc/ configs are being persisted
 
 ## Changelog
-
-See [Releases](https://github.com/ayufan/pve-backup-server-dockerfiles/releases).
+See [Releases](https://github.com/yourusername/proxmox-backup-server-container/releases).
 
 ## Configure
-
 ### 1. Add to Proxmox VE
-
-Since it runs in a container, it is by default self-signed.
-Follow the tutorial: https://pbs.proxmox.com/docs/pve-integration.html.
+Since it runs in a container, it is by default self-signed. Follow the tutorial: https://pbs.proxmox.com/docs/pve-integration.html.
 
 You might need to read a PBS fingerprint:
 
-```bash
+```
 docker-compose exec server proxmox-backup-manager cert info | grep Fingerprint
 ```
 
 ### 2. Add a new directory to store data
-
 Create a new file (or merge with existing): `docker-compose.override.yml`:
 
 ```yaml
@@ -88,10 +65,9 @@ volumes:
       device: /srv/dev-disk-by-label-backups
 ```
 
-Then, add a new datastore in a PBS: `https://<IP>:8007/`.
+Then, add a new datastore in a PBS: https://<IP>:8007/.
 
 ### 3. Configure TZ (optional)
-
 If you are running in Docker it might be advised to configure timezone.
 
 Create a new file (or merge with existing): `docker-compose.override.yml`:
@@ -106,9 +82,7 @@ services:
 ```
 
 ### 4. Allow smartctl access
-
-To be able to view SMART parameters via UI you need to expose drives and give container
-a special capability.
+To be able to view SMART parameters via UI you need to expose drives and give container a special capability.
 
 Create a new file (or merge with existing): `docker-compose.override.yml`:
 
@@ -125,7 +99,6 @@ services:
 ```
 
 ### 5. Persist config, graphs, and logs (optional, but advised)
-
 Create a new file (or merge with existing): `docker-compose.override.yml`:
 
 ```yaml
@@ -153,51 +126,44 @@ volumes:
 ```
 
 ### 6. Custom Script options:
-
 Run different setup script options:
 
 ```yaml
 version: '2.1'
 
-environment:
-  - PBS_SOURCES=yes
-  - PBS_ENTERPRISE=yes
-  - PBS_NO_SUBSCRIPTION=yes
-  - PBS_TEST=no
-  - DISABLE_SUBSCRIPTION_NAG=yes
-  - UPDATE_PBS=yes
-  - REBOOT_PBS=no
+services:
+  pbs:
+    environment:
+      - PBS_SOURCES=yes
+      - PBS_ENTERPRISE=yes
+      - PBS_NO_SUBSCRIPTION=yes
+      - PBS_TEST=no
+      - DISABLE_SUBSCRIPTION_NAG=yes
+      - UPDATE_PBS=yes
+      - REBOOT_PBS=no
 ```
 
 ### 7. Build Command from root directory:
-
-```bash
+```
 docker build -t proxmox-backup-server --build-arg VERSION=v3.3.2 -f versions/v3.3.2/Dockerfile .
 ```
+
 ## Install on bare-metal host
+Docker is convenient, but in some cases it might be simply better to install natively. Since the packages are built against Debian Buster your system needs to run soon to be stable distribution.
 
-Docker is convienient, but in some cases it might be simply better to install natively.
-Since the packages are built against `Debian Buster` your system needs to run soon
-to be stable distribution.
+You can copy compiled *.deb (it will automatically pick amd64 or arm64v8 based on your distribution) from the container and install:
 
-You can copy compiled `*.deb` (it will automatically pick `amd64` or `arm64v8` based on your distribution)
-from the container and install:
-
-```bash
+```
 cd /tmp
-docker run --rm ayufan/proxmox-backup-server:latest tar c /src/ | tar x
+docker run --rm ghcr.io/regix1/proxmox-backup-server:latest tar c /src/ | tar x
 apt install $PWD/src/*.deb
 ```
 
 ## Recompile latest version or master
-
 Refer to [PROCESS.md](PROCESS.md).
 
 ## Build on your own
-
 Refer to [PROCESS.md](PROCESS.md).
 
 ## Author
-
-This is just built by Kamil Trzciński, 2020-2023
-from the sources found on http://git.proxmox.com/.
+This is just built by [Your Name], [Year] from the sources found on http://git.proxmox.com/.
