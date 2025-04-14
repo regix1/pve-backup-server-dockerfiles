@@ -1,7 +1,7 @@
 # Proxmox Backup Server in a Container
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/regix1/proxmox-backup-server-container)](https://github.com/regix1/proxmox-backup-server-container/releases)
-[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/regix1/proxmox-backup-server-container?include_prereleases)](https://github.com/regix1/proxmox-backup-server-container/releases)
-[![Docker Image CI](https://github.com/regix1/proxmox-backup-server-container/actions/workflows/docker-image.yml/badge.svg)](https://github.com/regix1/proxmox-backup-server-container/actions/workflows/docker-image.yml)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/regix1/pve-backup-server-dockerfiles)](https://github.com/regix1/pve-backup-server-dockerfiles/releases)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/regix1/pve-backup-server-dockerfiles?include_prereleases)](https://github.com/regix1/pve-backup-server-dockerfiles/releases)
+[![Docker Image CI](https://github.com/regix1/pve-backup-server-dockerfiles/actions/workflows/docker-image.yml/badge.svg)](https://github.com/regix1/pve-backup-server-dockerfiles/actions/workflows/docker-image.yml)
 
 This is an unofficial compilation of Proxmox Backup Server to run it in a container for AMD64 architecture.
 
@@ -17,6 +17,8 @@ For starting quickly all images are precompiled and hosted on GitHub Container R
 ```
 docker pull ghcr.io/regix1/proxmox-backup-server:latest
 ```
+
+You can find all available image tags at: [https://github.com/regix1/pve-backup-server-dockerfiles/pkgs/container/proxmox-backup-server](https://github.com/regix1/pve-backup-server-dockerfiles/pkgs/container/proxmox-backup-server)
 
 ## Run
 ```
