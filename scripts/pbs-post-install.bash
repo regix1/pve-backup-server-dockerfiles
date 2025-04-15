@@ -94,11 +94,34 @@ EOF
   fi
 
   # Subscription Nag
-  if [[ "${DISABLE_SUBSCRIPTION_NAG}" == "yes" && ! -f /etc/apt/apt.conf.d/no-nag-script ]]; then
+  if [[ "${DISABLE_SUBSCRIPTION_NAG}" == "yes" ]]; then
     msg_info "Disabling subscription nag"
+    
+    # Create the config first
     echo "DPkg::Post-Invoke { \"dpkg -V proxmox-widget-toolkit | grep -q '/proxmoxlib\.js$'; if [ \$? -eq 1 ]; then { echo 'Removing subscription nag from UI...'; sed -i '/data\.status.*{/{s/\!//;s/active/NoMoreNagging/}' /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js; }; fi\"; };" >/etc/apt/apt.conf.d/no-nag-script
-    apt --reinstall install proxmox-widget-toolkit &>/dev/null
-    msg_ok "Disabled subscription nag (Delete browser cache)"
+    
+    # Wait for services to be fully up
+    for i in {1..10}; do
+      echo "Waiting for services to initialize... attempt $i"
+      sleep 10
+      
+      # Direct modification of the JS file
+      if [ -f /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js ]; then
+        sed -i '/data\.status.*{/{s/\!//;s/active/NoMoreNagging/}' /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+        msg_ok "Disabled subscription nag (Delete browser cache)"
+        break
+      fi
+      
+      # Try reinstalling as a fallback
+      if [ $i -eq 5 ]; then
+        apt --reinstall install proxmox-widget-toolkit &>/dev/null
+      fi
+    done
+    
+    # If we couldn't find the file after all attempts
+    if [ ! -f /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js ]; then
+      msg_error "Could not disable subscription nag - file not found"
+    fi
   fi
 
   # Update PBS
