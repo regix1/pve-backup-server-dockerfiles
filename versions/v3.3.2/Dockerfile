@@ -101,4 +101,5 @@ ADD runit/ /runit/
 # Add PBS post-install script and service
 COPY scripts/pbs-post-install.sh /usr/local/bin/
 COPY runit/pbs-post-install/ /runit/pbs-post-install/
+RUN chmod +x /usr/local/bin/pbs-post-install.sh /runit/pbs-post-install/run
 CMD ["runsvdir", "/runit"]
