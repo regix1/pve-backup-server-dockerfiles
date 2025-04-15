@@ -230,6 +230,3 @@ Refer to [PROCESS.md](PROCESS.md).
 
 ## Build on your own
 Refer to [PROCESS.md](PROCESS.md).
-
-## Author
-This is just built by [Your Name], [Year] from the sources found on http://git.proxmox.com/.
