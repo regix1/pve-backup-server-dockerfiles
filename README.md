@@ -145,7 +145,71 @@ services:
       - REBOOT_PBS=no
 ```
 
-### 7. Build Command from root directory:
+### 7. Custom Script Example:
+This is the full docker-compose.yml file example:
+
+```yaml
+  pbs:
+    image: ghcr.io/regix1/proxmox-backup-server:latest
+    container_name: pbs
+    ports:
+      - 8007:8007
+    mem_limit: 2G
+    hostname: proxmox-backup
+    environment:
+      - PBS_SOURCES=yes
+      - PBS_ENTERPRISE=yes
+      - PBS_NO_SUBSCRIPTION=yes
+      - PBS_TEST=no
+      - DISABLE_SUBSCRIPTION_NAG=yes
+      - UPDATE_PBS=yes
+      - REBOOT_PBS=no
+      - PUID=34
+      - PGID=34
+      - UMASK=002
+      - TZ=America/Chicago
+    volumes:
+      - backups:/backups
+      - pbs_etc:/etc/proxmox-backup
+      - pbs_logs:/var/log/proxmox-backup
+      - pbs_lib:/var/lib/proxmox-backup
+    tmpfs:
+      - /run
+    cap_add:
+      - SYS_RAWIO
+    restart: unless-stopped
+    stop_signal: SIGHUP
+
+volumes:
+  backups:
+    driver: local
+    driver_opts:
+      type: ''
+      o: bind,rw
+      device: /mnt/backups/linux
+  pbs_etc:
+    driver: local
+    driver_opts:
+      type: ''
+      o: bind
+      device: /srv/extra/pbs/etc
+  pbs_logs:
+    driver: local
+    driver_opts:
+      type: ''
+      o: bind
+      device: /srv/extra/pbs/logs
+  pbs_lib:
+    driver: local
+    driver_opts:
+      type: ''
+      o: bind
+      device: /srv/extra/pbs/lib
+
+```
+
+
+### 8. Build Command from root directory:
 ```
 docker build -t proxmox-backup-server --build-arg VERSION=v3.3.2 -f versions/v3.3.2/Dockerfile .
 ```
