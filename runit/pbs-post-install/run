@@ -1,0 +1,7 @@
+#!/bin/bash
+exec 2>&1
+echo "Starting PBS post install script..."
+cd /
+bash /usr/local/bin/pbs-post-install.sh
+echo "PBS post install script completed."
+exec sleep infinity
