@@ -149,7 +149,7 @@ services:
 This is the full docker-compose.yml file example:
 
 ```yaml
-  pbs:
+ pbs:
     image: ghcr.io/regix1/proxmox-backup-server:latest
     container_name: pbs
     ports:
@@ -164,9 +164,6 @@ This is the full docker-compose.yml file example:
       - DISABLE_SUBSCRIPTION_NAG=yes
       - UPDATE_PBS=yes
       - REBOOT_PBS=no
-      - PUID=34
-      - PGID=34
-      - UMASK=002
       - TZ=America/Chicago
     volumes:
       - backups:/backups
@@ -175,10 +172,14 @@ This is the full docker-compose.yml file example:
       - pbs_lib:/var/lib/proxmox-backup
     tmpfs:
       - /run
+      - /run/proxmox-backup
+    devices:
+      - /dev/nvme0n1
     cap_add:
       - SYS_RAWIO
     restart: unless-stopped
     stop_signal: SIGHUP
+
 
 volumes:
   backups:
